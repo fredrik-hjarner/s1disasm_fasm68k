@@ -2,7 +2,7 @@
 ; Scrap Brain Zone palette cycling script
 ; ---------------------------------------------------------------------------
 
-mSBZp:	macro duration,colours,paladdress,ramaddress
+macro	mSBZp duration,colours,paladdress,ramaddress
 	dc.b duration, colours
 	dc.w paladdress, ramaddress
 	endm

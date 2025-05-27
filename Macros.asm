@@ -3,12 +3,16 @@
 ; input: length to align to, value to use as padding (default is 0)
 ; ---------------------------------------------------------------------------
 
-align:	macro
-	if (narg=1)
-	dcb.b (\1-(*%\1))%\1,0
+macro	align a,_b
+	; if (narg=1)
+	match ,_b
+	; dcb.b (a-($ % a))%a,0 ; TODO: Rely on `massage_epression` instead
+	dcb.b (a-($ mod a)) mod a,0 ; TODO: Rely on `massage_epression` instead
 	else
-	dcb.b (\1-(*%\1))%\1,\2
-	endc
+	; dcb.b (a-($ % a))%a,_b ; TODO: Rely on `massage_epression` instead
+	dcb.b (a-($ mod a)) mod a,_b ; TODO: Rely on `massage_epression` instead
+	; endc
+	end match
 	endm
 
 ; ---------------------------------------------------------------------------
@@ -16,12 +20,14 @@ align:	macro
 ; input: 16-bit VRAM address, control port (default is ($C00004).l)
 ; ---------------------------------------------------------------------------
 
-locVRAM:	macro loc,controlport
-		if (narg=1)
+macro	locVRAM loc,controlport
+		; if (narg=1)
+		match ,controlport
 		move.l	#($40000000+((loc&$3FFF)<<16)+((loc&$C000)>>14)),(vdp_control_port).l
 		else
-		move.l	#($40000000+((loc&$3FFF)<<16)+((loc&$C000)>>14)),\controlport
-		endc
+		move.l	#($40000000+((loc&$3FFF)<<16)+((loc&$C000)>>14)),controlport
+		; endc
+		end match
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -29,7 +35,7 @@ locVRAM:	macro loc,controlport
 ; input: source, length, destination
 ; ---------------------------------------------------------------------------
 
-writeVRAM:	macro source,length,destination
+macro	writeVRAM source,length,destination
 		lea	(vdp_control_port).l,a5
 		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
@@ -44,7 +50,7 @@ writeVRAM:	macro source,length,destination
 ; input: source, length, destination
 ; ---------------------------------------------------------------------------
 
-writeCRAM:	macro source,length,destination
+macro	writeCRAM source,length,destination
 		lea	(vdp_control_port).l,a5
 		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
@@ -59,7 +65,7 @@ writeCRAM:	macro source,length,destination
 ; input: value, length, destination
 ; ---------------------------------------------------------------------------
 
-fillVRAM:	macro value,length,loc
+macro	fillVRAM value,length,loc
 		lea	(vdp_control_port).l,a5
 		move.w	#$8F01,(a5)
 		move.l	#$94000000+((length&$FF00)<<8)+$9300+(length&$FF),(a5)
@@ -73,9 +79,9 @@ fillVRAM:	macro value,length,loc
 ; input: source, destination, width [cells], height [cells]
 ; ---------------------------------------------------------------------------
 
-copyTilemap:	macro source,destination,width,height
+macro	copyTilemap source,destination,width,height
 		lea	(source).l,a1
-		locVRAM	\destination,d0
+		locVRAM	destination,d0
 		moveq	#width,d1
 		moveq	#height,d2
 		bsr.w	TilemapToVRAM
@@ -85,7 +91,7 @@ copyTilemap:	macro source,destination,width,height
 ; stop the Z80
 ; ---------------------------------------------------------------------------
 
-stopZ80:	macro
+macro	stopZ80
 		move.w	#$100,(z80_bus_request).l
 		endm
 
@@ -93,20 +99,20 @@ stopZ80:	macro
 ; wait for Z80 to stop
 ; ---------------------------------------------------------------------------
 
-waitZ80:	macro
-	@wait:	btst	#0,(z80_bus_request).l
-		bne.s	@wait
+macro	waitZ80
+	.wait:	btst	#0,(z80_bus_request).l
+		bne.s	.wait
 		endm
 
 ; ---------------------------------------------------------------------------
 ; reset the Z80
 ; ---------------------------------------------------------------------------
 
-resetZ80:	macro
+macro	resetZ80
 		move.w	#$100,(z80_reset).l
 		endm
 
-resetZ80a:	macro
+macro	resetZ80a
 		move.w	#0,(z80_reset).l
 		endm
 
@@ -114,7 +120,7 @@ resetZ80a:	macro
 ; start the Z80
 ; ---------------------------------------------------------------------------
 
-startZ80:	macro
+macro	startZ80
 		move.w	#0,(z80_bus_request).l
 		endm
 
@@ -122,7 +128,7 @@ startZ80:	macro
 ; disable interrupts
 ; ---------------------------------------------------------------------------
 
-disable_ints:	macro
+macro	disable_ints
 		move	#$2700,sr
 		endm
 
@@ -130,7 +136,7 @@ disable_ints:	macro
 ; enable interrupts
 ; ---------------------------------------------------------------------------
 
-enable_ints:	macro
+macro	enable_ints
 		move	#$2300,sr
 		endm
 
@@ -138,84 +144,84 @@ enable_ints:	macro
 ; long conditional jumps
 ; ---------------------------------------------------------------------------
 
-jhi:		macro loc
-		bls.s	@nojump
+macro		jhi loc
+		bls.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jcc:		macro loc
-		bcs.s	@nojump
+macro		jcc loc
+		bcs.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jhs:		macro loc
+macro		jhs loc
 		jcc	loc
 		endm
 
-jls:		macro loc
-		bhi.s	@nojump
+macro		jls loc
+		bhi.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jcs:		macro loc
-		bcc.s	@nojump
+macro		jcs loc
+		bcc.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jlo:		macro loc
+macro		jlo loc
 		jcs	loc
 		endm
 
-jeq:		macro loc
-		bne.s	@nojump
+macro		jeq loc
+		bne.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jne:		macro loc
-		beq.s	@nojump
+macro		jne loc
+		beq.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jgt:		macro loc
-		ble.s	@nojump
+macro		jgt loc
+		ble.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jge:		macro loc
-		blt.s	@nojump
+macro		jge loc
+		blt.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jle:		macro loc
-		bgt.s	@nojump
+macro		jle loc
+		bgt.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jlt:		macro loc
-		bge.s	@nojump
+macro		jlt loc
+		bge.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jpl:		macro loc
-		bmi.s	@nojump
+macro		jpl loc
+		bmi.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
-jmi:		macro loc
-		bpl.s	@nojump
+macro		jmi loc
+		bpl.s	.nojump
 		jmp	loc
-	@nojump:
+	.nojump:
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -223,19 +229,42 @@ jmi:		macro loc
 ; input: location to jump to if out of range, x-axis pos (obX(a0) by default)
 ; ---------------------------------------------------------------------------
 
-out_of_range:	macro exit,pos
-		if (narg=2)
+macro	out_of_range.w exit,pos
+		local tmp
+		; if (narg=2)
+		match tmp, pos
 		move.w	pos,d0		; get object position (if specified as not obX)
 		else
 		move.w	obX(a0),d0	; get object position
-		endc
+		; endc
+		end match
 		andi.w	#$FF80,d0	; round down to nearest $80
 		move.w	(v_screenposx).w,d1 ; get screen position
 		subi.w	#128,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0		; approx distance between object and screen
 		cmpi.w	#128+320+192,d0
-		bhi.\0	exit
+		; bhi.\0	exit
+		bhi.w	exit
+		endm
+
+macro	out_of_range.s exit,pos
+		local tmp
+		; if (narg=2)
+		match tmp, pos
+		move.w	pos,d0		; get object position (if specified as not obX)
+		else
+		move.w	obX(a0),d0	; get object position
+		; endc
+		end match
+		andi.w	#$FF80,d0	; round down to nearest $80
+		move.w	(v_screenposx).w,d1 ; get screen position
+		subi.w	#128,d1
+		andi.w	#$FF80,d1
+		sub.w	d1,d0		; approx distance between object and screen
+		cmpi.w	#128+320+192,d0
+		; bhi.\0	exit
+		bhi.s	exit
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -243,11 +272,11 @@ out_of_range:	macro exit,pos
 ; (remember to enable SRAM in the header first!)
 ; ---------------------------------------------------------------------------
 
-gotoSRAM:	macro
+macro	gotoSRAM
 		move.b	#1,($A130F1).l
 		endm
 
-gotoROM:	macro
+macro	gotoROM
 		move.b	#0,($A130F1).l
 		endm
 
@@ -257,9 +286,9 @@ gotoROM:	macro
 ; input: index address, element size
 ; ---------------------------------------------------------------------------
 
-zonewarning:	macro loc,elementsize
-	@end:
-		if (@end-loc)-(ZoneCount*elementsize)<>0
-		inform 1,"Size of \loc ($%h) does not match ZoneCount ($\#ZoneCount).",(@end-loc)/elementsize
+macro	zonewarning loc,elementsize
+	.end:
+		if (.end-loc)-(ZoneCount*elementsize)<>0
+		inform 1,"Size of \loc ($%h) does not match ZoneCount ($\#ZoneCount).",(.end-loc)/elementsize
 		endc
 		endm

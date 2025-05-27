@@ -2,7 +2,7 @@
 ; Palette pointers
 ; ---------------------------------------------------------------------------
 
-palp:	macro paladdress,ramaddress,colours
+macro	palp paladdress,ramaddress,colours
 	dc.l paladdress
 	dc.w ramaddress, (colours>>1)-1
 	endm

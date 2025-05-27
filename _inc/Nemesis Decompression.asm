@@ -60,7 +60,7 @@ NemDec_ProcessCompressedData:
 		subq.w	#8,d7	; get shift value
 		move.w	d5,d1
 		lsr.w	d7,d1	; shift so that high bit of the code is in bit position 7
-		cmpi.b	#%11111100,d1	; are the high 6 bits set?
+		cmpi.b	#11111100b,d1	; are the high 6 bits set?
 		bcc.s	NemPCD_InlineData	; if they are, it signifies inline data
 		andi.w	#$FF,d1
 		add.w	d1,d1

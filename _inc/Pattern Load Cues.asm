@@ -40,7 +40,7 @@ ptr_PLC_TryAgain:	dc.w PLC_TryAgain-ArtLoadCues
 ptr_PLC_EggmanSBZ2:	dc.w PLC_EggmanSBZ2-ArtLoadCues
 ptr_PLC_FZBoss:		dc.w PLC_FZBoss-ArtLoadCues
 
-plcm:	macro gfx,vram
+macro	plcm gfx,vram
 	dc.l gfx
 	dc.w vram
 	endm

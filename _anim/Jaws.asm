@@ -1,6 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Animation script - Jaws enemy
 ; ---------------------------------------------------------------------------
-Ani_Jaws:	dc.w @swim-Ani_Jaws
-@swim:		dc.b 7,	0, 1, 2, 3, afEnd
+Ani_Jaws:
+			dc.w .swim-Ani_Jaws
+.swim:		dc.b 7,	0, 1, 2, 3, afEnd
 		even

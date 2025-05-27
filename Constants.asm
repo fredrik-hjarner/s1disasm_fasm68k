@@ -47,7 +47,7 @@ TrackSavedDuration:	equ $F		; All tracks
 TrackSavedDAC:		equ $10		; DAC only
 TrackFreq:		equ $10		; FM/PSG only (2 bytes)
 TrackNoteTimeout:	equ $12		; FM/PSG only
-TrackNoteTimeoutMaster:equ $13		; FM/PSG only
+TrackNoteTimeoutMaster: equ $13		; FM/PSG only
 TrackModulationPtr:	equ $14		; FM/PSG only (4 bytes)
 TrackModulationWait:	equ $18		; FM/PSG only
 TrackModulationSpeed:	equ $19		; FM/PSG only
@@ -101,16 +101,16 @@ cAqua:		equ cGreen+cBlue	; colour aqua
 cMagenta:	equ cBlue+cRed		; colour magenta
 
 ; Joypad input
-btnStart:	equ %10000000 ; Start button	($80)
-btnA:		equ %01000000 ; A		($40)
-btnC:		equ %00100000 ; C		($20)
-btnB:		equ %00010000 ; B		($10)
-btnR:		equ %00001000 ; Right		($08)
-btnL:		equ %00000100 ; Left		($04)
-btnDn:		equ %00000010 ; Down		($02)
-btnUp:		equ %00000001 ; Up		($01)
-btnDir:		equ %00001111 ; Any direction	($0F)
-btnABC:		equ %01110000 ; A, B or C	($70)
+btnStart:	equ 10000000b ; Start button	($80)
+btnA:		equ 01000000b ; A		($40)
+btnC:		equ 00100000b ; C		($20)
+btnB:		equ 00010000b ; B		($10)
+btnR:		equ 00001000b ; Right		($08)
+btnL:		equ 00000100b ; Left		($04)
+btnDn:		equ 00000010b ; Down		($02)
+btnUp:		equ 00000001b ; Up		($01)
+btnDir:		equ 00001111b ; Any direction	($0F)
+btnABC:		equ 01110000b ; A, B or C	($70)
 bitStart:	equ 7
 bitA:		equ 6
 bitC:		equ 5
@@ -157,30 +157,30 @@ shoetime:	equ $34	; time left for speed shoes
 standonobject:	equ $3D	; object Sonic stands on
 
 ; Object variables (Sonic 2 disassembly nomenclature)
-render_flags:	equ 1	; bitfield for x/y flip, display mode
-art_tile:	equ 2	; palette line & VRAM setting (2 bytes)
-mappings:	equ 4	; mappings address (4 bytes)
-x_pos:		equ 8	; x-axis position (2-4 bytes)
-y_pos:		equ $C	; y-axis position (2-4 bytes)
-x_vel:		equ $10	; x-axis velocity (2 bytes)
-y_vel:		equ $12	; y-axis velocity (2 bytes)
-y_radius:	equ $16	; height/2
-x_radius:	equ $17	; width/2
-priority:	equ $18	; sprite stack priority -- 0 is front
-width_pixels:	equ $19	; action width
-mapping_frame:	equ $1A	; current frame displayed
-anim_frame:	equ $1B	; current frame in animation script
-anim:		equ $1C	; current animation
-next_anim:	equ $1D	; next animation
-anim_frame_duration: equ $1E ; time to next frame
-collision_flags: equ $20 ; collision response type
-collision_property: equ $21 ; collision extra property
-status:		equ $22	; orientation or mode
-respawn_index:	equ $23	; respawn list index number
-routine:	equ $24	; routine number
-routine_secondary: equ $25 ; secondary routine number
-angle:		equ $26	; angle
-subtype:	equ $28	; object subtype
+render_flags	equ 1	; bitfield for x/y flip, display mode
+art_tile	equ 2	; palette line & VRAM setting (2 bytes)
+mappings	equ 4	; mappings address (4 bytes)
+x_pos		equ 8	; x-axis position (2-4 bytes)
+y_pos		equ $C	; y-axis position (2-4 bytes)
+x_vel		equ $10	; x-axis velocity (2 bytes)
+y_vel		equ $12	; y-axis velocity (2 bytes)
+y_radius	equ $16	; height/2
+x_radius	equ $17	; width/2
+priority	equ $18	; sprite stack priority -- 0 is front
+width_pixels	equ $19	; action width
+mapping_frame	equ $1A	; current frame displayed
+anim_frame	equ $1B	; current frame in animation script
+anim		equ $1C	; current animation
+next_anim	equ $1D	; next animation
+anim_frame_duration equ $1E ; time to next frame
+collision_flags equ $20 ; collision response type
+collision_property equ $21 ; collision extra property
+status		equ $22	; orientation or mode
+respawn_index	equ $23	; respawn list index number
+routine	equ $24	; routine number
+routine_secondary equ $25 ; secondary routine number
+angle		equ $26	; angle
+subtype	equ $28	; object subtype
 
 ; Animation flags
 afEnd:		equ $FF	; return to beginning of animation
@@ -234,7 +234,7 @@ sfx_Shield:	equ ((ptr_sndAF-SoundIndex)/4)+sfx__First
 sfx_Saw:	equ ((ptr_sndB0-SoundIndex)/4)+sfx__First
 sfx_Electric:	equ ((ptr_sndB1-SoundIndex)/4)+sfx__First
 sfx_Drown:	equ ((ptr_sndB2-SoundIndex)/4)+sfx__First
-sfx_Flamethrower:equ ((ptr_sndB3-SoundIndex)/4)+sfx__First
+sfx_Flamethrower: equ ((ptr_sndB3-SoundIndex)/4)+sfx__First
 sfx_Bumper:	equ ((ptr_sndB4-SoundIndex)/4)+sfx__First
 sfx_Ring:	equ ((ptr_sndB5-SoundIndex)/4)+sfx__First
 sfx_SpikesMove:	equ ((ptr_sndB6-SoundIndex)/4)+sfx__First
